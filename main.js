@@ -239,7 +239,7 @@ const hands = new Hands({
 
 hands.setOptions({
     maxNumHands: 1,
-    modelComplexity: 1,
+    modelComplexity: 0, // Set to 0 to reduce lag and improve performance significantly
     minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.5
 });
@@ -254,14 +254,25 @@ hands.onResults((results) => {
         // Index finger tip is landmark 8
         const indexTip = landmarks[8];
         
-        // Map to canvas. Note: MediaPipe returns normalized coordinates (0-1).
-        // The canvas is flipped in CSS, so drawing normally at x,y will mirror it visually.
-        fingerX = indexTip.x * canvas.width;
-        fingerY = indexTip.y * canvas.height;
-        
-        bladeTrail.push({x: fingerX, y: fingerY});
-        if (bladeTrail.length > BLADE_MAX_LENGTH) {
-            bladeTrail.shift();
+        // Robust rotation-invariant gesture check (pointing index finger only)
+        const getDist = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
+        const isIndexExt = getDist(landmarks[8], landmarks[0]) > getDist(landmarks[6], landmarks[0]);
+        const isMiddleFolded = getDist(landmarks[12], landmarks[0]) < getDist(landmarks[10], landmarks[0]);
+        const isRingFolded = getDist(landmarks[16], landmarks[0]) < getDist(landmarks[14], landmarks[0]);
+        const isPinkyFolded = getDist(landmarks[20], landmarks[0]) < getDist(landmarks[18], landmarks[0]);
+
+        if (isIndexExt && isMiddleFolded && isRingFolded && isPinkyFolded) {
+            fingerX = indexTip.x * canvas.width;
+            fingerY = indexTip.y * canvas.height;
+            
+            bladeTrail.push({x: fingerX, y: fingerY});
+            if (bladeTrail.length > BLADE_MAX_LENGTH) {
+                bladeTrail.shift();
+            }
+        } else {
+            // Decay blade if gesture breaks
+            if (bladeTrail.length > 0) bladeTrail.shift();
+            if (bladeTrail.length > 0) bladeTrail.shift();
         }
     } else {
         isHandPresent = false;
@@ -358,9 +369,7 @@ function gameLoop() {
         // Draw Full Hand Skeleton for "Attention Seeking" visual
         if (isHandPresent && currentLandmarks) {
             ctx.save();
-            ctx.shadowColor = '#FF3366';
-            ctx.shadowBlur = 10;
-            ctx.fillStyle = '#FF3366';
+            ctx.fillStyle = '#FF3366'; // Removed expensive shadowBlur for performance
             
             // Draw neon dots at each joint
             for (let i = 0; i < currentLandmarks.length; i++) {
@@ -394,9 +403,7 @@ function gameLoop() {
         // Draw Full Hand Skeleton
         if (isHandPresent && currentLandmarks) {
             ctx.save();
-            ctx.shadowColor = '#FF3366';
-            ctx.shadowBlur = 10;
-            ctx.fillStyle = '#FF3366';
+            ctx.fillStyle = '#FF3366'; // Removed expensive shadowBlur for performance
             for (let i = 0; i < currentLandmarks.length; i++) {
                 const lm = currentLandmarks[i];
                 const x = lm.x * canvas.width;

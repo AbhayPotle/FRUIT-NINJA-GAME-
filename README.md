@@ -6,6 +6,7 @@
   [![Made with MediaPipe](https://img.shields.io/badge/MediaPipe-Hands-blue?style=for-the-badge&logo=google)](https://mediapipe.dev/)
   [![HTML5 Canvas](https://img.shields.io/badge/HTML5-Canvas-orange?style=for-the-badge&logo=html5)](https://developer.mozilla.org/)
   [![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-yellow?style=for-the-badge&logo=javascript)](https://developer.mozilla.org/)
+  [![Vibe Coding](https://img.shields.io/badge/Built_with-Vibe_Coding-8A2BE2?style=for-the-badge&logo=codeigniter&logoColor=white)](#)
 </div>
 
 ---

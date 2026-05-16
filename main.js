@@ -290,6 +290,14 @@ restartBtn.addEventListener('click', startGame);
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Draw faint video feed so players can see themselves and their hand position
+    if (videoElement.readyState >= 2) {
+        ctx.save();
+        ctx.globalAlpha = 0.3;
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+    }
+
     if (gameState === 'PLAYING') {
         frameCount++;
 

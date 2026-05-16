@@ -20,6 +20,9 @@ const ctx = canvas.getContext('2d');
 canvas.width = 1280;
 canvas.height = 720;
 
+const splatterCanvas = document.getElementById('splatter_canvas');
+const splatterCtx = splatterCanvas.getContext('2d');
+
 // Asset Images
 const assets = {
     watermelon: document.getElementById('img_watermelon'),
@@ -166,6 +169,22 @@ function spawnParticles(x, y, type) {
     for (let i = 0; i < 20; i++) {
         particles.push(new Particle(x, y, color));
     }
+    
+    // Also draw permanent splatters to background canvas
+    if (type !== 'bomb') {
+        splatterCtx.save();
+        splatterCtx.fillStyle = color;
+        splatterCtx.globalAlpha = 0.6;
+        for(let i=0; i<10; i++) {
+            let sx = x + (Math.random() - 0.5) * 120;
+            let sy = y + (Math.random() - 0.5) * 120;
+            let size = Math.random() * 12 + 3;
+            splatterCtx.beginPath();
+            splatterCtx.arc(sx, sy, size, 0, Math.PI*2);
+            splatterCtx.fill();
+        }
+        splatterCtx.restore();
+    }
 }
 
 function sliceEntity(entity, index) {
@@ -240,6 +259,7 @@ function startGame() {
     hud.style.display = 'flex';
     gameContainer.classList.add('game-active');
     backgroundEl.style.backgroundImage = "url('assets/game_bg.png')";
+    splatterCtx.clearRect(0, 0, splatterCanvas.width, splatterCanvas.height);
 }
 
 // MediaPipe Initialization

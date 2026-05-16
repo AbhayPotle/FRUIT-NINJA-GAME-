@@ -24,6 +24,9 @@
         <!-- Hidden video element for MediaPipe -->
         <video id="input_video" class="hidden" autoplay playsinline></video>
         
+        <!-- The Splatter Canvas (Permanent Splats) -->
+        <canvas id="splatter_canvas" width="1280" height="720" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 5; pointer-events: none; opacity: 0.8; mix-blend-mode: multiply;"></canvas>
+
         <!-- The Game Canvas -->
         <canvas id="output_canvas" width="1280" height="720"></canvas>
 

@@ -285,14 +285,25 @@ hands.onResults((results) => {
         // Index finger tip is landmark 8
         const indexTip = landmarks[8];
         
-        // Robust rotation-invariant gesture check (pointing index finger only)
+        // Robust rotation-invariant gesture check
         const getDist = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
         const isIndexExt = getDist(landmarks[8], landmarks[0]) > getDist(landmarks[6], landmarks[0]);
         const isMiddleFolded = getDist(landmarks[12], landmarks[0]) < getDist(landmarks[10], landmarks[0]);
         const isRingFolded = getDist(landmarks[16], landmarks[0]) < getDist(landmarks[14], landmarks[0]);
         const isPinkyFolded = getDist(landmarks[20], landmarks[0]) < getDist(landmarks[18], landmarks[0]);
 
-        if (isIndexExt && isMiddleFolded && isRingFolded && isPinkyFolded) {
+        const isPointing = isIndexExt && isMiddleFolded && isRingFolded && isPinkyFolded;
+        const isOpenPalm = isIndexExt && !isMiddleFolded && !isRingFolded && !isPinkyFolded;
+
+        // Pause Game with Open Palm
+        if (isOpenPalm && gameState === 'PLAYING') {
+            gameState = 'PAUSED';
+            bladeTrail = [];
+        } else if (isPointing && gameState === 'PAUSED') {
+            gameState = 'PLAYING';
+        }
+
+        if (isPointing && gameState === 'PLAYING') {
             fingerX = indexTip.x * canvas.width;
             fingerY = indexTip.y * canvas.height;
             
@@ -343,35 +354,37 @@ function gameLoop() {
         ctx.restore();
     }
 
-    if (gameState === 'PLAYING') {
-        frameCount++;
+    if (gameState === 'PLAYING' || gameState === 'PAUSED') {
+        if (gameState === 'PLAYING') {
+            frameCount++;
 
-        // Combo timeout
-        if (comboTimer > 0) {
-            comboTimer--;
-            if (comboTimer === 0) {
-                comboCount = 0;
-                comboDisplay.classList.remove('active');
+            // Combo timeout
+            if (comboTimer > 0) {
+                comboTimer--;
+                if (comboTimer === 0) {
+                    comboCount = 0;
+                    comboDisplay.classList.remove('active');
+                }
             }
-        }
 
-        // Spawn logic
-        spawnTimer++;
-        if (spawnTimer >= currentSpawnRate) {
-            spawnTimer = 0;
-            let count = Math.floor(Math.random() * 3) + 1;
-            // Increase difficulty: Reduce spawn delay as score goes up
-            currentSpawnRate = Math.max(MIN_SPAWN_RATE, 60 - Math.floor(score / 10) * 5);
-            
-            for(let i=0; i<count; i++) {
-                entities.push(new Entity());
+            // Spawn logic
+            spawnTimer++;
+            if (spawnTimer >= currentSpawnRate) {
+                spawnTimer = 0;
+                let count = Math.floor(Math.random() * 3) + 1;
+                // Increase difficulty: Reduce spawn delay as score goes up
+                currentSpawnRate = Math.max(MIN_SPAWN_RATE, 60 - Math.floor(score / 10) * 5);
+                
+                for(let i=0; i<count; i++) {
+                    entities.push(new Entity());
+                }
             }
         }
 
         // Update and Draw Entities
         for (let i = entities.length - 1; i >= 0; i--) {
             let e = entities[i];
-            e.update();
+            if (gameState === 'PLAYING') e.update();
             e.draw(ctx);
 
             // Out of bounds remove
@@ -381,7 +394,7 @@ function gameLoop() {
             }
 
             // Slicing logic
-            if (!e.sliced && bladeTrail.length > 1) {
+            if (gameState === 'PLAYING' && !e.sliced && bladeTrail.length > 1) {
                 const pt1 = bladeTrail[bladeTrail.length - 1];
                 const pt2 = bladeTrail[bladeTrail.length - 2];
                 const dist = pointToSegmentDistance(e.x, e.y, pt1.x, pt1.y, pt2.x, pt2.y);
@@ -395,7 +408,7 @@ function gameLoop() {
         // Update and Draw Particles
         for (let i = particles.length - 1; i >= 0; i--) {
             let p = particles[i];
-            p.update();
+            if (gameState === 'PLAYING') p.update();
             p.draw(ctx);
             if (p.life <= 0) {
                 particles.splice(i, 1);
@@ -434,6 +447,23 @@ function gameLoop() {
             ctx.shadowBlur = 20;
             ctx.stroke();
             ctx.shadowBlur = 0; // reset
+        }
+        
+        // Draw Pause Overlay
+        if (gameState === 'PAUSED') {
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '900 80px Outfit';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 10;
+            ctx.fillText('PAUSED', canvas.width/2, canvas.height/2);
+            ctx.font = '400 30px Outfit';
+            ctx.fillStyle = '#00E5FF';
+            ctx.fillText('Make Pointing Gesture to Resume', canvas.width/2, canvas.height/2 + 50);
+            ctx.restore();
         }
     } else {
         // Draw Full Hand Skeleton

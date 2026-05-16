@@ -244,10 +244,13 @@ hands.setOptions({
     minTrackingConfidence: 0.5
 });
 
+let currentLandmarks = null;
+
 hands.onResults((results) => {
     if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
         isHandPresent = true;
-        const landmarks = results.multiHandLandmarks[0];
+        currentLandmarks = results.multiHandLandmarks[0];
+        const landmarks = currentLandmarks;
         // Index finger tip is landmark 8
         const indexTip = landmarks[8];
         
@@ -352,6 +355,25 @@ function gameLoop() {
             }
         }
 
+        // Draw Full Hand Skeleton for "Attention Seeking" visual
+        if (isHandPresent && currentLandmarks) {
+            ctx.save();
+            ctx.shadowColor = '#FF3366';
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = '#FF3366';
+            
+            // Draw neon dots at each joint
+            for (let i = 0; i < currentLandmarks.length; i++) {
+                const lm = currentLandmarks[i];
+                const x = lm.x * canvas.width;
+                const y = lm.y * canvas.height;
+                ctx.beginPath();
+                ctx.arc(x, y, i === 8 ? 8 : 4, 0, 2 * Math.PI); // Larger dot for index finger tip
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
         // Draw Blade
         if (bladeTrail.length > 1) {
             ctx.beginPath();
@@ -369,6 +391,23 @@ function gameLoop() {
             ctx.shadowBlur = 0; // reset
         }
     } else {
+        // Draw Full Hand Skeleton
+        if (isHandPresent && currentLandmarks) {
+            ctx.save();
+            ctx.shadowColor = '#FF3366';
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = '#FF3366';
+            for (let i = 0; i < currentLandmarks.length; i++) {
+                const lm = currentLandmarks[i];
+                const x = lm.x * canvas.width;
+                const y = lm.y * canvas.height;
+                ctx.beginPath();
+                ctx.arc(x, y, i === 8 ? 8 : 4, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
         // Just draw blade on start/gameover screens for fun interaction
         if (bladeTrail.length > 1) {
             ctx.beginPath();

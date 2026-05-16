@@ -46,9 +46,12 @@
             <p class="subtitle">AI Hand Gesture Edition</p>
             <div class="loading-status" id="loading_status">Loading AI Models...</div>
             
-            <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--secondary);">
-                <p style="color: var(--secondary); font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">🗡️ BLADE GESTURE REQUIRED 🗡️</p>
-                <p style="color: #FFF;">Make a <b>pointing gesture</b> (extend ONLY your index finger) to activate the blade!</p>
+            <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--secondary); display: flex; align-items: center; gap: 15px; text-align: left; max-width: 450px;">
+                <img src="assets/gesture_icon.png" alt="Gesture" style="width: 80px; height: 80px; filter: drop-shadow(0 0 10px var(--secondary)); border-radius: 10px;">
+                <div>
+                    <p style="color: var(--secondary); font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">🗡️ BLADE GESTURE REQUIRED</p>
+                    <p style="color: #FFF; margin: 0; font-size: 0.9rem;">Make a <b>pointing gesture</b> (extend ONLY your index finger) to activate the blade!</p>
+                </div>
             </div>
 
             <button class="btn" id="start_btn" disabled>PLAY NOW</button>

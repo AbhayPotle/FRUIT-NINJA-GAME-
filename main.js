@@ -12,6 +12,7 @@ const newHighscoreMsg = document.getElementById('new_highscore_msg');
 const comboDisplay = document.getElementById('combo_display');
 const comboVal = document.getElementById('combo_val');
 const gameContainer = document.querySelector('.game-container');
+const backgroundEl = document.querySelector('.background');
 
 // Canvas Setup
 const canvas = document.getElementById('output_canvas');
@@ -204,6 +205,7 @@ function gameOver() {
     gameoverScreen.classList.remove('hidden');
     hud.style.display = 'none';
     finalScore.innerText = score;
+    backgroundEl.style.backgroundImage = "url('assets/gameover_bg.png')";
 
     if (score > highscore) {
         highscore = score;
@@ -229,6 +231,7 @@ function startGame() {
     gameoverScreen.classList.add('hidden');
     hud.style.display = 'flex';
     gameContainer.classList.add('game-active');
+    backgroundEl.style.backgroundImage = "url('assets/game_bg.png')";
 }
 
 // MediaPipe Initialization

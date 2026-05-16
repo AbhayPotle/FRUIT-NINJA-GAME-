@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Gesture Fruit Ninja</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- MediaPipe dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- Background element (static or slight animation) -->
+        <div class="background" style="background-image: url('assets/game_bg.png')"></div>
+
+        <!-- Hidden video element for MediaPipe -->
+        <video id="input_video" class="hidden" autoplay playsinline></video>
+        
+        <!-- The Game Canvas -->
+        <canvas id="output_canvas" width="1280" height="720"></canvas>
+
+        <!-- UI Overlay: Score & Highscore -->
+        <div class="hud" id="hud" style="display: none;">
+            <div class="score-board">
+                <div class="label">SCORE</div>
+                <div class="value" id="score_val">0</div>
+            </div>
+            <div class="score-board high-score">
+                <div class="label">BEST</div>
+                <div class="value" id="highscore_val">0</div>
+            </div>
+            <div class="combo-display" id="combo_display">Combo x<span id="combo_val">1</span></div>
+        </div>
+
+        <!-- UI Overlay: Start Screen -->
+        <div class="screen" id="start_screen">
+            <h1 class="title">FRUIT<br><span>NINJA</span></h1>
+            <p class="subtitle">AI Hand Gesture Edition</p>
+            <div class="loading-status" id="loading_status">Loading AI Models...</div>
+            <button class="btn" id="start_btn" disabled>PLAY NOW</button>
+            <p class="instruction">Allow camera access to play. Use your index finger as a blade to slice the fruits!</p>
+        </div>
+
+        <!-- UI Overlay: Game Over Screen -->
+        <div class="screen hidden" id="gameover_screen">
+            <h1 class="title gameover-text">GAME OVER</h1>
+            <div class="final-score-container">
+                <p>Final Score: <span id="final_score">0</span></p>
+                <p class="new-highscore-msg hidden" id="new_highscore_msg">🎉 NEW HIGH SCORE! 🎉</p>
+            </div>
+            <button class="btn" id="restart_btn">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <!-- Hidden Asset Images -->
+    <div style="display:none;">
+        <img id="img_watermelon" src="assets/watermelon.png" alt="watermelon">
+        <img id="img_apple" src="assets/apple.png" alt="apple">
+        <img id="img_orange" src="assets/orange.png" alt="orange">
+        <img id="img_bomb" src="assets/bomb.png" alt="bomb">
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

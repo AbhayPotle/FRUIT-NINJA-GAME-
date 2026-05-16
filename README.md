@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/gesture_icon.png" alt="Fruit Ninja Gesture" width="150" />
   <h1>🥷 AI-Powered Fruit Ninja 🍉</h1>
-  <p><strong>A zero-latency, hand-gesture controlled browser game built with MediaPipe and HTML5 Canvas.</strong></p>
+  <p><strong>A zero-latency, hand-gesture controlled browser game built with MediaPipe, HTML5 Canvas, and Vibe Coding.</strong></p>
   
   [![Made with MediaPipe](https://img.shields.io/badge/MediaPipe-Hands-blue?style=for-the-badge&logo=google)](https://mediapipe.dev/)
   [![HTML5 Canvas](https://img.shields.io/badge/HTML5-Canvas-orange?style=for-the-badge&logo=html5)](https://developer.mozilla.org/)

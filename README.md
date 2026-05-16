@@ -57,7 +57,7 @@ Since the game requires webcam access, modern browsers require it to be served o
 
 ## 🚀 Live Demo
 
-[Play the game here!]({NETLIFY_URL}) *(Replace with Netlify URL after deployment)*
+[Play the game here!](https://comforting-biscochitos-566a7e.netlify.app) 
 
 ---
 <div align="center">

@@ -53,7 +53,9 @@ let fingerY = 0;
 let isHandPresent = false;
 
 // Config
-const SPAWN_RATE = 60; // frames
+let currentSpawnRate = 60; // frames
+const MIN_SPAWN_RATE = 20;
+let spawnTimer = 0;
 let frameCount = 0;
 
 // Classes
@@ -68,9 +70,13 @@ class Entity {
         const centerX = canvas.width / 2;
         const direction = (centerX - this.x) / canvas.width;
         
+        
+        // Dynamic Difficulty: Increase speeds based on global score
+        const diffMultiplier = 1 + (score / 50);
+
         this.vx = (Math.random() * 4 + 2) * Math.sign(direction) || (Math.random() - 0.5) * 6;
-        this.vy = -(Math.random() * 5 + 15);
-        this.gravity = 0.25;
+        this.vy = -(Math.random() * 5 + 15) * Math.min(diffMultiplier, 1.4);
+        this.gravity = 0.25 * Math.min(diffMultiplier, 1.5);
         this.rotation = Math.random() * Math.PI * 2;
         this.vr = (Math.random() - 0.5) * 0.2;
         this.sliced = false;
@@ -222,6 +228,8 @@ function startGame() {
     score = 0;
     scoreVal.innerText = score;
     comboCount = 0;
+    currentSpawnRate = 60;
+    spawnTimer = 0;
     entities = [];
     particles = [];
     bladeTrail = [];
@@ -328,8 +336,13 @@ function gameLoop() {
         }
 
         // Spawn logic
-        if (frameCount % SPAWN_RATE === 0) {
+        spawnTimer++;
+        if (spawnTimer >= currentSpawnRate) {
+            spawnTimer = 0;
             let count = Math.floor(Math.random() * 3) + 1;
+            // Increase difficulty: Reduce spawn delay as score goes up
+            currentSpawnRate = Math.max(MIN_SPAWN_RATE, 60 - Math.floor(score / 10) * 5);
+            
             for(let i=0; i<count; i++) {
                 entities.push(new Entity());
             }

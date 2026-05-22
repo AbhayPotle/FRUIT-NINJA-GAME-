@@ -64,3 +64,4 @@ Since the game requires webcam access, modern browsers require it to be served o
 <div align="center">
   <p>Built with ❤️ by Abhay Potle using <strong>Vibe Coding</strong> 🚀</p>
 </div>
+[vercel link!](https://fruit-ninja-game-two.vercel.app/)
